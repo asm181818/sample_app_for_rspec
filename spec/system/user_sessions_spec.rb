@@ -1,9 +1,7 @@
 require 'rails_helper'
-require 'support/driver_setting'
-require 'support/login_support'
 
 RSpec.describe "UserSessions", type: :system do
-  include LoginSupport
+  # include LoginSupport
   let(:user) { FactoryBot.create(:user) }
 
   describe 'ログイン前' do
