@@ -1,9 +1,6 @@
 require 'rails_helper'
-require 'support/driver_setting'
-require 'support/login_support'
 
 RSpec.describe "Users", type: :system do
-  include LoginSupport
   let(:user) { FactoryBot.create(:user) }
   # テストの対象
   describe 'ログイン前' do
@@ -66,10 +63,11 @@ RSpec.describe "Users", type: :system do
   end
 
   describe 'ログイン後' do
+    before { sign_in(user) }
+
     describe 'ユーザー編集' do
       context 'フォームの入力値が正常' do
         it 'ユーザーの編集が成功する' do
-          sign_in(user)
           # ログインした状態でユーザー編集画面に遷移
           visit edit_user_path(user)
           # ユーザー情報を更新
@@ -83,7 +81,6 @@ RSpec.describe "Users", type: :system do
 
       context 'メールアドレスが未入力' do
         it 'ユーザーの編集が失敗する' do
-          sign_in(user)
           visit edit_user_path(user)
           # メールアドレスが未入力
           fill_in 'user[email]', with: ''
@@ -96,7 +93,6 @@ RSpec.describe "Users", type: :system do
 
       context '登録済のメールアドレスを使用' do
         it 'ユーザーの編集が失敗する' do
-          sign_in(user)
           visit edit_user_path(user)
           # 別のユーザーを作成
           other_user = FactoryBot.create(:user)
@@ -111,7 +107,6 @@ RSpec.describe "Users", type: :system do
 
       context '他ユーザーのユーザー編集ページにアクセス' do
         it '他ユーザーのユーザー編集ページへのアクセスが失敗する' do
-          sign_in(user)
           other_user = FactoryBot.create(:user)
           # 別のユーザーの編集ページに遷移
           visit edit_user_path(other_user)
