@@ -9,22 +9,26 @@ RSpec.describe Task, type: :model do
     end
 
     it 'タイトルが入っていなければ無効' do
+      # タイトルが空のタスクを作ろうとする
       task = FactoryBot.build(:task, title: nil)
       task.valid?
       expect(task.errors[:title]).to include("can't be blank")
     end
 
     it 'ステータスが入っていなければ無効' do
+      # ステータスが空のタスクを作ろうとする
       task = FactoryBot.build(:task, status: nil)
       task.valid?
       expect(task.errors[:status]).to include("can't be blank")
     end
 
     it 'タイトルが重複していると無効' do
-      task1 = FactoryBot.create(:task)
-      task2 = FactoryBot.build(:task)
-      task2.valid?
-      expect(task2.errors[:title]).to include("has already been taken")
+      # タイトルが'test'のタスクを作成
+      task = FactoryBot.create(:task, title: 'test')
+      # 直前で生成したタスクと同じタイトル名のタスクを作ろうとする
+      duplicated_title_task = FactoryBot.build(:task, title: 'test')
+      duplicated_title_task.valid?
+      expect(duplicated_title_task.errors[:title]).to include("has already been taken")
     end
   end
 end
